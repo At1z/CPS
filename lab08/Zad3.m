@@ -1,7 +1,6 @@
 clc;
 % Zadanie 3 - Filtr interpolatora i decymatora cyfrowego, mikser audio
 clear all; close all;
-
 % Instrukcja do zadania
 figure(1);
 Img=imread("Instrukcja31.jpg");

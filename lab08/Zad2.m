@@ -10,7 +10,7 @@ Img=imshow(Img);
 %% Generowanie teoretycznej odpowiedzi impulsowej
 fs = 400e3;                         % czestotliwosc probkowania
 fc = 100e3;                         % czestotliwosc nosna
-M  = 1024;                            % polowa dlugosci filtra
+M  = 1024;                            % polowa dlugosci filtra odpowiednia szerokość pasma
 N  = 2*M+1;
 n  = 1:M;
 h  = (2/pi)*sin(pi*n/2).^2 ./n;     % połowa odpowiedzi impulsowej (TZ str. 352)
@@ -58,22 +58,26 @@ Ydsb_c_a = (1+xr1).*cos(2*pi*fc1*t); %stacja 1
 Ydsb_c_b = (1+xr2).*cos(2*pi*fc2*t); %stacja 2
 Ydsb_c   = dA*(Ydsb_c_a + Ydsb_c_b);
 
-%DSB-SC
+%DSB-SC nie przenosi nośnej
 Ydsb_sc_a = xr1.*(cos(2*pi*fc1*t));
 Ydsb_sc_b = xr2.*(cos(2*pi*fc2*t));
 Ydsb_sc   = dA*(Ydsb_sc_a + Ydsb_sc_b);
 
-%SSB-SC (+) wstega po lewej
+%SSB-SC (+) wstega po lewej Jest to najbardziej efektywny sposób
+% modulacji AM pod względem zużycia przepustowości,
+% ponieważ transmituje tylko jedno pasmo boczne.
 Yssb_sc1_a = 0.5*xr1.*cos(2*pi*fc1*t) + 0.5*xh1.*sin(2*pi*fc1*t);
 Yssb_sc1_b = 0.5*xr2.*cos(2*pi*fc2*t) + 0.5*xh2.*sin(2*pi*fc2*t);
 Yssb_sc1   = dA*(Yssb_sc1_a + Yssb_sc1_b);
 
-%SSB-SC (-) wstega po prawej
+%SSB-SC (-) wstega po prawej Jest to najbardziej efektywny sposób
+% modulacji AM pod względem zużycia przepustowości,
+% ponieważ transmituje tylko jedno pasmo boczne.
 Yssb_sc2_a = 0.5*xr1.*cos(2*pi*fc1*t) - 0.5*xh1.*sin(2*pi*fc1*t);
 Yssb_sc2_b = 0.5*xr2.*cos(2*pi*fc2*t) - 0.5*xh2.*sin(2*pi*fc2*t);
 Yssb_sc2   = dA*(Yssb_sc2_a + Yssb_sc2_b);
 
-%transformaty powyzszych sygnalow AM
+%transformaty powyzszych sygnalow AM 
 HYdsb_c   = fft(Ydsb_c);
 HYdsb_sc  = fft(Ydsb_sc);
 HYssb_sc1 = fft(Yssb_sc1);
@@ -103,3 +107,20 @@ subplot(1,4,4);
 plot(f, abs(HYssb_sc2));
 title('fft SSB-SC (-)');
 xlim([90e3 120e3]);
+
+%{
+DSB-C (Double Side Band with Carrier):
+Jest to jeden z najprostszych rodzajów modulacji amplitudy (AM).
+W przypadku DSB-C sygnał modulujący (x(t)) jest dodawany do nośnej (cos(2πf_c t)), tworząc dwie boczne pasma widmowe po obu stronach częstotliwości nośnej. Pasmo nośnej zawiera również oryginalny sygnał nośny. Dlatego nazwa "Double Side Band with Carrier" - podwójne pasmo boczne z nośną.
+Sygnał ten ma prostą implementację, ale wykorzystuje więcej energii, ponieważ nośna musi być przesyłana razem z sygnałem modulującym, co powoduje, że jest marnowana pewna część przepustowości pasma.
+
+DSB-SC (Double Side Band - Suppressed Carrier):
+W DSB-SC nośna jest usuwana z sygnału DSB-C, pozostawiając tylko dwie boczne pasma widmowe.
+W tym przypadku sygnał modulujący jest przemnażany przez nośną, ale bez dodawania, co oznacza, że nośna nie jest transmitowana razem z sygnałem modulującym.
+Jest to bardziej efektywny sposób modulacji AM, ponieważ nie marnuje się energii na przesyłanie nośnej. Jednak de-modulacja wymaga odtworzenia nośnej, co może być złożone.
+
+SSB-SC (Single Side Band - Suppressed Carrier):
+W SSB-SC usuwane jest jedno z pasm bocznych, pozostawiając tylko jedno pasmo boczne.
+Wersja SSB-SC ma dwie warianty, z wstęgą boczną po lewej ((+)) lub prawej ((-)) stronie częstotliwości nośnej. Oznacza to, że tylko jedno pasmo boczne jest transmitowane wraz z nośną, a drugie jest usuwane.
+Jest to najbardziej efektywny sposób modulacji AM pod względem zużycia przepustowości, ponieważ transmituje tylko jedno pasmo boczne. Jednak, podobnie jak w przypadku DSB-SC, de-modulacja wymaga odtworzenia nośnej.
+%}

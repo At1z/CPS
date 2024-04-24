@@ -24,7 +24,10 @@ h  = [-h(M:-1:1) 0 h(1:M)];         % cała odpowiedź dla n = ?M,...,0,...,M
 w  = blackman(N); 
 w  = w';            
 hw = h.*w;                          % wymnożenie odpowiedzi impulsowej z oknem
-
+%Okno Blackmana ma gładki kształt, który ma lepsze właściwości w dziedzinie częstotliwości niż inne prostsze okna,
+% takie jak okno prostokątne. Jest często stosowane w przypadkach,
+% gdy potrzebne jest dobre tłumienie bocznego obszaru pasma częstotliwościowego
+% i minimalne zniekształcenia transformaty Fouriera. 
 %% widmo Fouriera oraz wykresy
 
 m = -M : 1 : M;                     % dla filtra nieprzyczynowego (bez przesunięcia o M próbek w prawo)
@@ -117,3 +120,13 @@ plot(xr,'b');
 title('Porównanie sygnałów x i xr po modulacji');
 legend('x  - Sygnał z pliku zmodulowany ','xr - Sygnał skonstruowany i zmodulowany');
 hold off;
+
+
+%{ 
+Obwiednia, zwana również "envelopem", jest używana w wielu dziedzinach przetwarzania sygnałów, w tym w analizie sygnałów mowy, muzyki,
+przetwarzaniu obrazów, komunikacji bezprzewodowej i wielu innych. Istnieje kilka powodów, dla których obwiednia jest stosowana w analizie sygnałów:
+
+Demodulacja AM (Amplitude Modulation): W przypadku sygnałów amplitudowo zmodulowanych (AM),
+ obwiednia jest reprezentacją sygnału modulującego. Poprzez demodulację AM, możemy odzyskać oryginalny sygnał modulujący z sygnału zmodulowanego.
+ Obwiednia jest używana do wyodrębnienia tego sygnału modulującego.
+%}
