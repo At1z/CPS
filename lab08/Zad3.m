@@ -116,19 +116,33 @@ x1wav = x1wav(:,1)';
 x2wav = x2wav';
 f_wav = 48e3;                                               % resampling do 48e3
 
-%interpolacja wav1
-[P1,Q1] = rat(f_wav/fs1w);
-x1_resamp = resample(x1wav, P1,Q1);
-vector1 = linspace(1, length(x1wav), 1.5*length(x1wav));    % 1,5*32kHz ->48kHz
-x1wav_interp = interp1(x1wav, vector1);
+K = 3;
+M = 50;
+N = 2*M+1;
+Nx=length(x1wav);
+xz = zeros(1,K*Nx);
+xz(1:K:end) = x1wav;
+h = K*fir1(N, 1/K);
+x1wav_re = filter(h,1,xz);
 
-%interpolacja wav2
-[P2,Q2] = rat(f_wav/fs2w);
-x2_resamp = resample(x2wav, P2,Q2);
-vector2 = linspace(1, length(x2wav), 6*length(x2wav));      % 6*8kHz ->48kHz
-x2wav_interp = interp1(x2wav, vector2);
+L = 2;
+M = 50;
+N = 2*M+1;
+h = K*fir1(N, 1/L - 0.1*(1/L));
+x1wav_re = filter(h,1,x1wav_re);
+x1wav_re = x1wav_re(1:L:end);
 
-miks = x1wav_interp;                                                        % sygnał 1
-miks(1:length(x2wav_interp)) = miks(1:length(x2wav_interp)) + x2wav_interp; % sygnał 2 dodany do 1
- 
-sound(miks(1:length(x1wav_interp)), f_wav);
+% Resampling sygnału x2
+K = 6;
+M = 50;
+N = 2*M+1;
+Nx=length(x2wav);
+xz = zeros(1,K*Nx);
+xz(1:K:end) = x2wav;
+h = K*fir1(N, 1/K);
+x2wav_re = filter(h,1,xz);
+
+% Miksowanie sygnałów
+miks = x1wav_re;
+miks(1:length(x2wav_re)) = miks(1:length(x2wav_re)) + x2wav_re;
+%sound(miks,f_wav);

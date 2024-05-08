@@ -111,7 +111,8 @@ xlim([90e3 120e3]);
 %{
 DSB-C (Double Side Band with Carrier):
 Jest to jeden z najprostszych rodzajów modulacji amplitudy (AM).
-W przypadku DSB-C sygnał modulujący (x(t)) jest dodawany do nośnej (cos(2πf_c t)), tworząc dwie boczne pasma widmowe po obu stronach częstotliwości nośnej. Pasmo nośnej zawiera również oryginalny sygnał nośny. Dlatego nazwa "Double Side Band with Carrier" - podwójne pasmo boczne z nośną.
+W przypadku DSB-C sygnał modulujący (x(t)) jest dodawany do nośnej (cos(2πf_c t)), tworząc dwie boczne pasma widmowe po obu stronach częstotliwości nośnej.
+Pasmo nośnej zawiera również oryginalny sygnał nośny. Dlatego nazwa "Double Side Band with Carrier" - podwójne pasmo boczne z nośną.
 Sygnał ten ma prostą implementację, ale wykorzystuje więcej energii, ponieważ nośna musi być przesyłana razem z sygnałem modulującym, co powoduje, że jest marnowana pewna część przepustowości pasma.
 
 DSB-SC (Double Side Band - Suppressed Carrier):
