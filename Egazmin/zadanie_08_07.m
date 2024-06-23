@@ -30,17 +30,17 @@ disp(ggain_my);
 % Rysowanie zer i biegunów filtra analogowego
 figure;
 subplot(2,2,1);
-zplane(z, p );
+zplane(z, p ); % zera - O, bieguny - X
 title('Zera i bieguny filtra analogowego');
 
 % Rysowanie zer i biegunów filtra cyfrowego (wbudowana bilinear)
 subplot(2,2,2);
-zplane(zz_builtin, pp_builtin);
+zplane(zz_builtin, pp_builtin); % zera - O, bieguny - X
 title('Zera i bieguny filtra cyfrowego (bilinear)');
 
 % Rysowanie zer i biegunów filtra cyfrowego (bilinearMY)
 subplot(2,2,3);
-zplane(zz_my, pp_my);
+zplane(zz_my, pp_my); % zera - O, bieguny - X
 title('Zera i bieguny filtra cyfrowego (bilinearMY)');
 
 % Rysowanie odpowiedzi częstotliwościowej filtra analogowego

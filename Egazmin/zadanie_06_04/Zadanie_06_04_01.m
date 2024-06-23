@@ -59,7 +59,7 @@ end
 
 % Obliczanie średniej wartości widma mocy
 average_psd = mean(all_psd, 2);
-f = fpr / Mfft * (0 : Mfft - 1);  % Częstotliwość
+frequencies = fpr / Mfft * (0 : Mfft - 1);  % Częstotliwości dla widma
 
 % Rysowanie wykresów
 figure;
@@ -72,7 +72,7 @@ grid on;
 
 subplot(3, 1, 2);
 for frag = 1:num_fragments
-    plot(f, psd_fragments(:, frag), 'DisplayName', ['Fragment ' num2str(frag)]);
+    plot(frequencies, psd_fragments(:, frag), 'DisplayName', ['Fragment ' num2str(frag)]);
     hold on;
 end
 xlabel('Częstotliwość [Hz]');
@@ -83,7 +83,7 @@ grid on;
 hold off;
 
 subplot(3, 1, 3);
-plot(f, average_psd);
+plot(frequencies, average_psd);
 xlabel('Częstotliwość [Hz]');
 ylabel('Moc [V^2/Hz]');
 title('Średnie widmo mocy fragmentów');

@@ -14,11 +14,14 @@ T=N*dt; f0=1/T; fk = f0*(0:N-1);        % fskalowanie osi czestotliwosci
 x1 = 1*cos(2*pi*(10*f0)*t);             % sygnal 1
 x2 = 1*cos(2*pi*(10.5*f0)*t);           % sygnal 2
 x3 = 0.001*cos(2*pi*(20*f0)*t);         % sygnal 3
-x12 = x1 + x2;
+x13 = x1 + x3;
 x23 = x2 + x3;
-xes = [x1,x2,x3,x12,x23];
-x = xes(:,2);                          % wybor: x1, x2, x3, x1+x2, x2+x3
-    
+xes = [x1,x2,x3,x13,x23];
+x = xes(:,5);                          % wybor: x1, x2, x3, x1+x2, x2+x3
+figure;
+subplot(211);
+plot(x)
+title('x');
 % Funkcja "okna"
 w1 = boxcar(N);                         % okno prostokatne, N - dlugosc
 w2 = chebwin(N,100);                    % okno Czebyszewa, liczba - poziom listkow bocznych
@@ -26,7 +29,10 @@ w = w2; scale = 1/sum(w);               % wybor: w1, w2 albo inne, dodane okno
     
 % Windowing
 x = x.*w;                               % "okienkowanie" sygnalu
-    
+subplot(212);
+plot(x) 
+title('x*w');
+   
 % DFT of the signal
 X1 = A*x;                               % nasz kod DFT
 X2 = fft(x);                            % funkcja Matlaba DFT (Fast Fourier Transform)
