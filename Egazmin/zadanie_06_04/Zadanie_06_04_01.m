@@ -18,6 +18,7 @@ noise = noise_level * randn(1, length(t));
 % Dodanie szumu do sygnału sinusoidalnego
 noisy_sine_wave = sine_wave + noise;
 
+figure
 % Parametry fragmentów
 fragment_samples = fragment_length * fs; % Liczba próbek w fragmencie
 num_fragments = floor(length(t) / fragment_samples);
@@ -88,3 +89,4 @@ xlabel('Częstotliwość [Hz]');
 ylabel('Moc [V^2/Hz]');
 title('Średnie widmo mocy fragmentów');
 grid on;
+

@@ -9,7 +9,7 @@ amplitude = 1;      % Amplituda sygnału sinusoidalnego
 sine_wave = amplitude * sin(2 * pi * f * t);
 
 % Parametry szumu
-noise_levels = [0.1, 0.3, 0.5, 1];  % Różne poziomy szumu
+noise_levels = [0.1, 0.3, 0.5, 1, 2];  % Różne poziomy szumu
 num_levels = length(noise_levels);
 
 % Parametry STFT i PSD
@@ -20,7 +20,7 @@ Many = floor((fs - Mwind) / Mstep) + 1;
 dt = 1 / fs;
 fpr = fs;
 w = hamming(Mwind)';  % Wybór okna
-
+disp(Many);
 figure;
 
 for i = 1:num_levels

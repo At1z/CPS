@@ -17,15 +17,16 @@ x3 = 0.001*cos(2*pi*(20*f0)*t);         % sygnal 3
 x13 = x1 + x3;
 x23 = x2 + x3;
 xes = [x1,x2,x3,x13,x23];
-x = xes(:,5);                          % wybor: x1, x2, x3, x1+x2, x2+x3
+x = xes(:,3);                          % wybor: x1, x2, x3, x1+x2, x2+x3
 figure;
 subplot(211);
 plot(x)
 title('x');
+
 % Funkcja "okna"
 w1 = boxcar(N);                         % okno prostokatne, N - dlugosc
 w2 = chebwin(N,100);                    % okno Czebyszewa, liczba - poziom listkow bocznych
-w = w2; scale = 1/sum(w);               % wybor: w1, w2 albo inne, dodane okno
+w = w1; scale = 1/sum(w);               % wybor: w1, w2 albo inne, dodane okno
     
 % Windowing
 x = x.*w;                               % "okienkowanie" sygnalu
@@ -42,6 +43,8 @@ error1 = max(abs(X1-X2))                % blad wzgledem Matlaba, powinno byc pra
 % Interpretacja widma DFT, skalowanie
 X1 = scale * X1;                        % skalowanie amplitudy X1
 X2 = scale * X2;                        % skalowanie amplitudy X2
+disp("błąd Widma X1(custom) - X2(matlab) po wyskalowaniu ")
+error2 = max(abs(X1-X2))                % blad wzgledem Matlaba, powinno byc prawie zero
 
 figure;
 subplot(211); 

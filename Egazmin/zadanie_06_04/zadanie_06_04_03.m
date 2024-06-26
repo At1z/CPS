@@ -1,12 +1,12 @@
 clear all; close all; clc;
 
 % Parametry
-fs = 1000;                   % Częstotliwość próbkowania
-total_time = 50;             % Całkowity czas sygnału w sekundach
+fs = 2000;                   % Częstotliwość próbkowania
+total_time = 100;             % Całkowity czas sygnału w sekundach
 t = linspace(0, total_time, fs * total_time); % Oś czasu
 f = 5;                       % Częstotliwość sygnału sinusoidalnego
 amplitude = 1;               % Amplituda sygnału sinusoidalnego
-fragment_length = 2;         % Długość fragmentu w sekundach
+fragment_length = 1;         % Długość fragmentu w sekundach
 noise_level = 1;             % Poziom szumu Gaussowskiego
 
 % Generowanie sygnału sinusoidalnego
@@ -41,7 +41,7 @@ for frag = 1:num_fragments
     
     % Inicjalizacja STFT i PSD dla fragmentu
     X2 = zeros(1, Mfft);
-    Many = floor((length(fragment) - Mwind) / Mstep) + 1;
+    Many = floor((length(fragment) - Mwind) / Mstep) + 1
     
     % Pętla analizy
     for m = 1:Many
@@ -57,20 +57,28 @@ for frag = 1:num_fragments
     psd_fragments(:, frag) = X2;
 end
 
-f = fpr / Mfft * (0 : Mfft - 1);  % Częstotliwość
+% Obliczanie średniej wartości widma mocy
+average_psd = mean(all_psd, 2);
+frequencies = fpr / Mfft * (0 : Mfft - 1);  % Częstotliwości dla widma
+
+% Obliczanie FFT dla całego sygnału
+X2_total = fft(sine_wave, Mfft);
+psd_total = (1 / (length(sine_wave) * fs)) * abs(X2_total) .^ 2;
+psd_total = psd_total(1:Mfft);  % Przycinanie do tej samej długości co average_psd
 
 % Rysowanie wykresów
 figure;
-subplot(3, 1, 1);
+subplot(4, 1, 1);
 plot(t, noisy_sine_wave);
+plot(t,sine_wave);
 xlabel('Czas [s]');
 ylabel('Amplituda');
 title('Długi sygnał sinusoidalny z szumem Gaussowskim');
 grid on;
 
-subplot(3, 1, 2);
+subplot(4, 1, 2);
 for frag = 1:num_fragments
-    plot(f, psd_fragments(:, frag), 'DisplayName', ['Fragment ' num2str(frag)]);
+    plot(frequencies, psd_fragments(:, frag), 'DisplayName', ['Fragment ' num2str(frag)]);
     hold on;
 end
 xlabel('Częstotliwość [Hz]');
@@ -80,24 +88,16 @@ legend show;
 grid on;
 hold off;
 
-% Szukanie minimalnej liczby widm do uśrednienia
-min_fragments_needed = num_fragments;
-for num_to_average = 1:num_fragments
-    average_psd = mean(all_psd(:, 1:num_to_average), 2);
-    
-    % Sprawdzenie, czy maksimum sinusa jest dobrze widoczne
-    [max_value, max_index] = max(average_psd);
-    if f(max_index) >= 4.9 && f(max_index) <= 5.1
-        min_fragments_needed = num_to_average;
-        disp(['Maksimum sinusa jest dobrze widoczne przy ', num2str(num_to_average), ' fragmentach.']);
-        break;
-    end
-end
-
-subplot(3, 1, 3);
-average_psd = mean(all_psd(:, 1:min_fragments_needed), 2);
-plot(f, average_psd);
+subplot(4, 1, 3);
+plot(frequencies, average_psd);
 xlabel('Częstotliwość [Hz]');
 ylabel('Moc [V^2/Hz]');
-title(['Średnie widmo mocy fragmentów (średnia z ', num2str(min_fragments_needed), ' fragmentów)']);
+title('Średnie widmo mocy fragmentów');
+grid on;
+
+subplot(4, 1, 4);
+plot(frequencies, psd_total);
+xlabel('Częstotliwość [Hz]');
+ylabel('Moc [V^2/Hz]');
+title('Widmo mocy dla całego sygnału');
 grid on;
