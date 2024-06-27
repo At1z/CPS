@@ -45,7 +45,7 @@ zplane(zz_my, pp_my); % zera - O, bieguny - X
 title('Zera i bieguny filtra cyfrowego (bilinearMY)');
 
 
-[h_a, w_a] = freqs(b, a, logspace(1, 4, 1000)); % odpowiedź częstotliwościową filtra analogowego 
+[h_a, w_a] = freqs(b, a, logspace(1, 4, 1000));
 subplot(2,2,4);
 semilogx(w_a, 20*log10(abs(h_a)));
 grid on;
@@ -53,9 +53,8 @@ title('Charakterystyka amplitudowo-częstotliwościowa filtra analogowego');
 xlabel('Częstotliwość (rad/s)');
 ylabel('Amplituda (dB)');
 
-% Rysowanie odpowiedzi częstotliwościowej filtra cyfrowego
-[b_d_builtin, a_d_builtin] = zp2tf(zz_builtin(:), pp_builtin(:), ggain_builtin); % konwertuje zera (z), bieguny (p) i wzmocnienie (k) filtra cyfrowego na współczynniki funkcji przenoszenia (b i a).
-[h_d_builtin, w_d_builtin] = freqz(b_d_builtin, a_d_builtin, 1024, fpr); %  oblicza odpowiedź częstotliwościową filtra cyfrowego o współczynnikach b i a.
+[b_d_builtin, a_d_builtin] = zp2tf(zz_builtin(:), pp_builtin(:), ggain_builtin); % Konwersja na kolumny
+[h_d_builtin, w_d_builtin] = freqz(b_d_builtin, a_d_builtin, 1024, fpr);
 
 [b_d_my, a_d_my] = zp2tf(zz_my(:), pp_my(:), ggain_my); % Konwersja na kolumny
 [h_d_my, w_d_my] = freqz(b_d_my, a_d_my, 1024, fpr);

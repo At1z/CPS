@@ -1,13 +1,13 @@
 clear all; close all; clc;
 
 % Parametry
-fs = 1000;                   % Częstotliwość próbkowania
-total_time = 10;             % Całkowity czas sygnału w sekundach
+fs = 2000;                   
+total_time = 100;             
 t = linspace(0, total_time, fs * total_time); % Oś czasu
 f = 5;                       
-amplitude = 1;              
+amplitude = 1;               
 fragment_length = 1;         % Długość fragmentu w sekundach
-noise_level = 1;             % Poziom szumu Gaussowskiego
+noise_level = 1;             
 
 
 sine_wave = amplitude * sin(2 * pi * f * t);
@@ -18,33 +18,32 @@ noise = noise_level * randn(1, length(t));
 
 noisy_sine_wave = sine_wave + noise;
 
-figure
-
+% Parametry fragmentów
 fragment_samples = fragment_length * fs; % Liczba próbek w fragmencie
 num_fragments = floor(length(t) / fragment_samples);
 
 % Parametry STFT i PSD
-Mwind = 256;
-Mstep = 16;
-Mfft = 2 * Mwind;
-dt = 1 / fs;
+Mwind = 256; % wielkosc okna
+Mstep = 16;  % step w oknie
+Mfft = 2 * Mwind; %liczba punktów do obliczenia fft
+dt = 1 / fs; % czas między próbkami
 fpr = fs;
-w = hamming(Mwind)'; 
+w = hamming(Mwind)';  % okienko
 
-% Inicjalizacja zmiennych do przechowywania wyników
+
 all_psd = zeros(Mfft, num_fragments);
 psd_fragments = zeros(Mfft, num_fragments);
 
 % Przetwarzanie fragmentów
 for frag = 1:num_fragments
-    % Wybór fragmentu
+    
     fragment = noisy_sine_wave((frag-1)*fragment_samples+1 : frag*fragment_samples);
     
     % Inicjalizacja STFT i PSD dla fragmentu
     X2 = zeros(1, Mfft);
-    Many = floor((length(fragment) - Mwind) / Mstep) + 1;
+    Many = floor((length(fragment) - Mwind) / Mstep) + 1
     
-   
+    
     for m = 1:Many
         bx = fragment(1 + (m - 1) * Mstep : Mwind + (m - 1) * Mstep);
         bx = bx .* w;
@@ -63,15 +62,20 @@ average_psd = mean(all_psd, 2);
 frequencies = fpr / Mfft * (0 : Mfft - 1);  % Częstotliwości dla widma
 
 
+X2_total = fft(sine_wave, Mfft);
+psd_total = (1 / (length(sine_wave) * fs)) * abs(X2_total) .^ 2;
+psd_total = psd_total(1:Mfft); 
+
+
 figure;
-subplot(3, 1, 1);
+subplot(4, 1, 1);
 plot(t, noisy_sine_wave);
 xlabel('Czas [s]');
 ylabel('Amplituda');
 title('Długi sygnał sinusoidalny z szumem Gaussowskim');
 grid on;
 
-subplot(3, 1, 2);
+subplot(4, 1, 2);
 for frag = 1:num_fragments
     plot(frequencies, psd_fragments(:, frag), 'DisplayName', ['Fragment ' num2str(frag)]);
     hold on;
@@ -83,10 +87,16 @@ legend show;
 grid on;
 hold off;
 
-subplot(3, 1, 3);
+subplot(4, 1, 3);
 plot(frequencies, average_psd);
 xlabel('Częstotliwość [Hz]');
 ylabel('Moc [V^2/Hz]');
 title('Średnie widmo mocy fragmentów');
 grid on;
 
+subplot(4, 1, 4);
+plot(frequencies, psd_total);
+xlabel('Częstotliwość [Hz]');
+ylabel('Moc [V^2/Hz]');
+title('Widmo mocy dla całego sygnału');
+grid on;
